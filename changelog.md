@@ -3,20 +3,22 @@
 All notable product, architecture, implementation, release, and deployment changes are recorded here.
 
 ## Unreleased
+
 ### Product
-- Product objectives, MVP scope, priorities, success criteria, and non-goals are maintained by the Product Manager.
+- 2026-07-16 — Made approval of a unique, non-overlapping repository charter or explicit retirement the only active QSO-DIGITALIS product decision.
+- 2026-07-16 — Confirmed that retirement is preferable to inferring identity, twin, wallet, runtime, or agent scope from the repository name.
 
 ### Architecture
-- Architecture decisions and task sequencing are maintained through `taskchain.md`.
+- No schema, integration contract, or implementation may begin until ownership relative to the other QSO repositories is approved.
 
 ### Implementation
-- Builder work is tracked through `punchlist.md` with verification evidence.
+- No implemented capability is claimed; coordination files remain administrative evidence only.
 
 ### Release
-- Release readiness, versioning, artifacts, and rollback criteria are tracked in `release.md`.
+- Only a documentation charter candidate is possible before P0 approval; no runtime release is eligible.
 
 ### Deployment
-- Deployment environments, health checks, validation, and rollback events are tracked in `deploy.md`.
+- No deployment surface is authorized.
 
 ## Entry Format
 - Date
