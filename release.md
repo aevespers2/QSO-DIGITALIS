@@ -1,56 +1,64 @@
 # Release Plan
 
 ## Current Decision
-Status: `BLOCKED — APPROVAL REQUIRED`
 
-No release is eligible because the repository has no approved charter or evidence-backed implementation surface. P0 is blocked on a user decision, all preparation and quality-gate items are unchecked, and reviewed commit `395f1acbacf7e7c7996d6df14f8023d47f7686a7` has no reported commit-status checks.
+Status: `BLOCKED — CHARTER OR RETIREMENT APPROVAL REQUIRED`
+
+QSO-DIGITALIS has no evidence-backed product charter or implementation surface beyond coordination files. P0 is blocked on a user decision, no implementation task is authorized, all quality evidence is absent, and candidate head `f00b0dfacd672baa5cb3b723e97210bc2efcfe07` has no tests, security checks, documentation artifact, provenance, or repository-specific acceptance evidence.
 
 ## Versioning
-- Scheme: Semantic Versioning after charter approval.
-- First possible documentation-only candidate: `0.0.1-charter.1`.
-- First implementation candidate: `0.1.0-alpha.1`, only after the schema-first skeleton and versioned integration contract are verified.
-- No tag may imply runtime capability before P1 and P2 are complete.
 
-## Candidate Scope
+- Scheme: Semantic Versioning only after an active charter is approved.
+- First possible documentation candidate: `0.0.1-charter.1`.
+- First implementation candidate: `0.1.0-alpha.1`, only after a schema-first skeleton and versioned integration contract pass.
+- A retirement outcome must not imply any runtime capability.
+
+## Release Scope
+
 ### Charter candidate
-- Approved purpose, users, inputs, outputs, non-goals, trust boundary, repository relationships, data classification, license, and verification strategy.
+- Purpose, users, inputs/outputs, non-goals, trust boundary, data classification, privacy/license model, repository relationships, verification strategy, and retirement criteria.
 
 ### Later implementation candidate
-- Charter-approved schema-first directories, fixtures, tests, and CI.
-- Versioned, hash-verifiable integration contract.
-- No autonomous execution, credentials, unrestricted networking, direct settlement, or self-modifying behavior.
+- Charter-approved declarative schemas, fixtures, tests, CI, versioned/hash-verifiable integration contract, and no autonomous execution, credentials, unrestricted networking, settlement, or self-modification.
 
 ## Selected Completed Work
-None. Coordination files and `changelog.md` are not a releaseable charter or implementation.
+
+None. Coordination files and changelog entries are not a releasable charter or implementation.
 
 ## Planned Changelog Entries
-- `Documentation`: approved repository charter, boundaries, data classification, and verification strategy.
-- `Added`: schema-first skeleton, fixtures, tests, and versioned contract after approval.
-- `Security`: explicit prohibition and verification of credentials, unrestricted network access, autonomous execution, settlement, and self-modification.
+
+- `Documentation`: approved charter or retirement notice.
+- `Added`: schema-first skeleton and versioned contract only after approval.
+- `Security`: verified absence of prohibited authority and credential/network/settlement paths.
+- `Release`: rendered charter or implementation artifacts, checksums, provenance, and approval.
 
 ## Acceptance Gates
+
 | Gate | Status | Requirement |
 |---|---|---|
-| Charter approval | BLOCKED | User approves purpose, users, inputs, outputs, non-goals, trust boundary, relationships, data classification, and license. |
-| Task completion | FAIL | P0 is `DONE`; no implementation release until P1 and P2 are `DONE`. |
-| Tests/validation | NO EVIDENCE | Schemas, fixtures, negative cases, and hash verification pass deterministically. |
+| Charter/retirement approval | BLOCKED | Approve a unique non-overlapping purpose or retire the repository. |
+| Task completion | FAIL | P0 is `DONE`; implementation requires P1-P2 `DONE`. |
+| Tests/contracts | NO EVIDENCE | Schemas, references, fixtures, negative cases, and hashes validate deterministically. |
 | Security | NO EVIDENCE | Prohibited capabilities are absent and independently checked. |
-| Documentation | FAIL | README charter and verification strategy do not yet exist. |
-| Provenance | NO EVIDENCE | Approval record, commit, commands, schema/fixture hashes, tool versions, and artifact checksums recorded. |
-| Approval | PENDING | Separate release approval after the applicable gates pass. |
+| Documentation | FAIL | Approved charter, boundaries, and verification strategy are absent. |
+| Provenance | NO EVIDENCE | Decision record, commit, commands, versions, artifacts, hashes, and attestations are retained. |
+| Approval | PENDING | Separate release approval after applicable gates pass. |
 
 ## Artifact Requirements
-- Approved charter source and rendered documentation for the charter candidate.
-- For implementation: schemas, fixtures, test reports, security report, source archive/package, SBOM where applicable, checksums, and provenance manifest.
+
+- Approved charter or retirement notice in source and rendered form.
+- For implementation: schemas, fixtures, validation/test reports, security report, source/package artifact, SBOM where applicable, checksums, provenance, and rollback evidence.
 
 ## Rollback Criteria
-Withdraw a charter candidate if its scope is ambiguous or conflicts with another repository. Roll back an implementation candidate if code exceeds the charter, introduces a prohibited capability, cannot validate contracts independently, or produces non-reproducible hashes. Restore the previous verified tag and preserve failed-candidate evidence.
+
+Withdraw a charter candidate if its scope is ambiguous, overlaps another repository, or leaves data/authority boundaries unresolved. Roll back implementation if it exceeds the charter, introduces prohibited capability, fails independent contract validation, or produces non-reproducible hashes. Preserve failed-candidate evidence and restore the prior verified state.
 
 ## Unresolved Blockers
-- Approval is required for the repository charter and license/data-classification model.
+
+- Approval is required to activate or retire QSO-DIGITALIS and to select its privacy/license/data-classification model.
 - No implementation task is authorized until P0 is approved.
-- No schemas, fixtures, tests, CI, security evidence, documentation, or provenance exist.
-- No CI status is attached to the reviewed commit.
+- No schemas, fixtures, tests, CI, security evidence, documentation artifact, provenance, or rollback evidence exists.
 
 ## Release Log
-- 2026-07-16: Candidate evaluated and held `BLOCKED — APPROVAL REQUIRED`; no completed work selected.
+
+- 2026-07-16: Reclassified the candidate as a charter-or-retirement decision; no release-ready work selected.
