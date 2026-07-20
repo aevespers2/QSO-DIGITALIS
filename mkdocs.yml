@@ -1,0 +1,49 @@
+site_name: QSO-DIGITALIS
+site_description: Bounded, content-addressed evidence exchange contract candidate for the A.L.I.S.T.A.I.R.E. QSO ecosystem
+site_url: https://aevespers2.github.io/QSO-DIGITALIS/
+repo_url: https://github.com/aevespers2/QSO-DIGITALIS
+repo_name: aevespers2/QSO-DIGITALIS
+edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: site
+strict: true
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+
+nav:
+  - Overview: index.md
+  - Portfolio role: portfolio-role.md
+  - Architecture: architecture.md
+  - Contract design: contracts.md
+  - Diagrams: diagrams.md
+  - Security and privacy: security.md
+  - Developer onboarding: onboarding.md
+  - Operations and recovery: operations.md
+  - Decisions and open questions: decisions.md
+  - Release evidence: release-evidence.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search
