@@ -51,4 +51,4 @@ The portfolio needs a stable boundary between systems that retrieve evidence, sy
 
 ## Source-of-truth files
 
-Repository work must remain aligned with [`taskchain.md`](../taskchain.md), [`release.md`](../release.md), [`changelog.md`](../changelog.md), and [`punchlist.md`](../punchlist.md). Where documentation and implementation claims conflict, the most conservative evidence-backed interpretation governs.
+Repository work must remain aligned with the canonical [task chain](https://github.com/aevespers2/QSO-DIGITALIS/blob/main/taskchain.md), [release plan](https://github.com/aevespers2/QSO-DIGITALIS/blob/main/release.md), [changelog](https://github.com/aevespers2/QSO-DIGITALIS/blob/main/changelog.md), and [Builder punch list](https://github.com/aevespers2/QSO-DIGITALIS/blob/main/punchlist.md). Where documentation and implementation claims conflict, the most conservative evidence-backed interpretation governs.
