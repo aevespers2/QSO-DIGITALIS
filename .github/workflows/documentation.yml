@@ -1,0 +1,99 @@
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out submitted source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify source identity
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test -z "$(git status --porcelain)"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Install documentation dependencies
+        run: python -m pip install --requirement requirements-docs.txt
+
+      - name: Build documentation strictly
+        run: mkdocs build --strict
+
+      - name: Validate generated-site boundary and record evidence
+        shell: python
+        env:
+          SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          site = Path("site")
+          if not site.is_dir():
+              raise SystemExit("site directory was not generated")
+
+          records = []
+          for path in sorted(site.rglob("*")):
+              if path.is_symlink():
+                  raise SystemExit(f"generated site contains symlink: {path}")
+              if path.is_file():
+                  data = path.read_bytes()
+                  records.append({
+                      "path": path.relative_to(site).as_posix(),
+                      "bytes": len(data),
+                      "sha256": hashlib.sha256(data).hexdigest(),
+                  })
+
+          if not records:
+              raise SystemExit("generated site is empty")
+
+          manifest = {
+              "repository": "aevespers2/QSO-DIGITALIS",
+              "source_sha": os.environ["SOURCE_SHA"],
+              "generator": "mkdocs build --strict",
+              "files": records,
+          }
+          Path("documentation-evidence.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps({
+              "source_sha": manifest["source_sha"],
+              "file_count": len(records),
+              "manifest_sha256": hashlib.sha256(
+                  Path("documentation-evidence.json").read_bytes()
+              ).hexdigest(),
+          }, indent=2))
+
+      - name: Upload rendered site and evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: qso-digitalis-documentation-${{ github.run_id }}
+          path: |
+            site/
+            documentation-evidence.json
+          if-no-files-found: error
+          retention-days: 14
