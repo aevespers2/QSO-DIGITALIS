@@ -18,6 +18,7 @@ All notable product, architecture, implementation, release, and deployment chang
 - 2026-07-20 — Added a contribution guide and pinned documentation dependencies. Evidence: draft PR #5.
 - 2026-07-21 — Added the source-observation interpretation and exchange profile, including record identity separation, candidate record families, transformation taxonomy, state machine, privacy/retention inheritance, correction/revocation propagation, pairwise maps, triple-overlap witnesses, and required decisions. Evidence: draft PR #5.
 - 2026-07-21 — Expanded the Pages home, task chain, punch list, release gates, and navigation to align with the new profile while retaining the architectural hold. Evidence: draft PR #5.
+- 2026-07-21 — Added a standalone obstruction and gluing ledger and linked it from the README, Pages home, and site navigation so portfolio reviewers can evaluate incompatibilities without conflating them with the detailed profile specification. Evidence: draft PR #5.
 
 ### Architecture
 
@@ -27,7 +28,7 @@ All notable product, architecture, implementation, release, and deployment chang
 - 2026-07-21 — Separated source record, temporal assessment, domain interpretation, policy projection, exchange envelope, Bridge transport artifact, delivery receipt, Repository `1` disposition, and consumer receipt identities. Evidence: draft PR #5.
 - 2026-07-21 — Defined the candidate path `QSO-SEEKER → temporal authority → QSO-DIGITALIS → Bridge → Repository 1 → bounded consumer`, with each transition creating a new immutable record and no transport/display event creating authority. Evidence: draft PR #5.
 - 2026-07-21 — Added five pairwise gluing groups and eight triple-overlap witnesses across source, time, interpretation, transport, disposition, runtime/experiment consumption, correction, interface review, and emergency stop. Evidence: draft PR #5.
-- 2026-07-21 — Recorded nine material obstructions: identity collapse, temporal overlap, generic envelope ownership conflict, exchange/transport overlap, evidence-store/canonical-state overlap, projection/capability confusion, privacy downgrade, correction/cache divergence, and consciousness terminology ambiguity. Evidence: draft PR #5.
+- 2026-07-21 — Recorded nine core material obstructions in the detailed profile and expanded the portfolio ledger to eighteen tracked incompatibilities, adding subject namespaces, canonicalization, transformation declarations, vocabularies, replay domains, consumer binding, partial-state semantics, source-license/retention, and emergency recovery. Evidence: draft PR #5.
 - No schema, integration contract, or implementation may begin until ownership relative to the other QSO repositories is approved.
 
 ### Security
@@ -43,7 +44,7 @@ All notable product, architecture, implementation, release, and deployment chang
 
 ### Implementation
 
-- No implemented field capability is claimed; coordination files, diagrams, roadmap entries, materializer output, interpretation profiles, rendered documentation, and workflow results remain administrative or design evidence only.
+- No implemented field capability is claimed; coordination files, diagrams, roadmap entries, materializer output, interpretation profiles, obstruction ledgers, rendered documentation, and workflow results remain administrative or design evidence only.
 
 ### Release
 
