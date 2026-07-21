@@ -29,6 +29,7 @@ This role is proposed, not approved. QSO-DIGITALIS must not retrieve sources, si
 | Consent control | `.consent/consent-capacity-lock-v1.json` and CI lock | Accepted repository control |
 | Field architecture | Draft PR #2 | Review candidate only |
 | Interpretation/exchange profile | Documentation candidate | Proposed boundary and fixtures only |
+| Obstruction and gluing ledger | Documentation candidate | Eighteen active incompatibilities; no accepted repair |
 | Schemas and fixtures | Roadmap names and documentation profiles | Not implemented |
 | Runtime and storage | None accepted | Not implemented |
 | Integration evidence | None | Not validated |
@@ -38,7 +39,7 @@ This role is proposed, not approved. QSO-DIGITALIS must not retrieve sources, si
 
 The portfolio currently risks collapsing source record identity, temporal assessment, domain interpretation, policy projection, transport artifact, delivery receipt, Repository `1` disposition, and consumer display into one misleading “evidence” identity. That can make transport success look like truth, a derived interpretation look like source evidence, or a projection look like an operational capability.
 
-The candidate repair keeps every stage separately identified and hash-bound, with explicit typed references, transformation declarations, privacy/retention inheritance, correction and revocation propagation, and pairwise/triple-overlap fixtures.
+The candidate repair keeps every stage separately identified and hash-bound, with explicit typed references, transformation declarations, privacy/retention inheritance, correction and revocation propagation, and pairwise/triple-overlap fixtures. The [obstruction and gluing ledger](obstruction-and-gluing.md) expands this into eighteen tracked incompatibilities covering identity, temporal authority, envelope ownership, transport, canonical state, capabilities, privacy, correction, terminology, subject namespaces, canonicalization, transformations, vocabularies, replay, consumer binding, partial state, source-license/retention, and emergency recovery.
 
 ## Design principles
 
@@ -58,7 +59,8 @@ The candidate repair keeps every stage separately identified and hash-bound, wit
 - [Portfolio role](portfolio-role.md) — ownership and non-overlap across A.L.I.S.T.A.I.R.E.
 - [Architecture](architecture.md) — current boundary and candidate lifecycle
 - [Contract design](contracts.md) — proposed records, capabilities, and invariants
-- [Source-observation interpretation profile](source-observation-interpretation-profile.md) — record identities, gluing maps, fixtures, and active obstructions across Seeker, temporal assessment, Bridge, Repository `1`, runtimes, and interfaces
+- [Source-observation interpretation profile](source-observation-interpretation-profile.md) — detailed record families, transformations, fixtures, and candidate route
+- [Obstruction and gluing analysis](obstruction-and-gluing.md) — portfolio-facing incompatibility ledger, pairwise maps, triple-overlap witnesses, acceptance evidence, and required ownership decisions
 - [Diagrams](diagrams.md) — context, lifecycle, trust, and recovery views
 - [Security and privacy](security.md) — protected assets, threats, and controls
 - [Developer onboarding](onboarding.md) — safe documentation and future contract workflow
