@@ -23,6 +23,7 @@ nav:
   - Architecture: architecture.md
   - Contract design: contracts.md
   - Source-observation interpretation profile: source-observation-interpretation-profile.md
+  - Obstruction and gluing analysis: obstruction-and-gluing.md
   - Diagrams: diagrams.md
   - Security and privacy: security.md
   - Developer onboarding: onboarding.md
