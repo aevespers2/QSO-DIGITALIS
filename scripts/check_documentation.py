@@ -71,6 +71,15 @@ def require_markers(findings: list[str], text: str, label: str, markers: tuple[s
             findings.append(f"{label} missing marker: {marker}")
 
 
+def require_markers_casefold(
+    findings: list[str], text: str, label: str, markers: tuple[str, ...]
+) -> None:
+    normalized = text.casefold()
+    for marker in markers:
+        if marker.casefold() not in normalized:
+            findings.append(f"{label} missing marker: {marker}")
+
+
 def validate(root: Path) -> dict[str, object]:
     findings: list[str] = []
     checked: list[str] = []
@@ -162,10 +171,14 @@ def validate(root: Path) -> dict[str, object]:
             "## Retirement sequence",
             "## Migration states",
             "## Rollback and restoration",
-            "consumer acknowledgments",
-            "residual risk",
             "040-J",
         ),
+    )
+    require_markers_casefold(
+        findings,
+        retirement,
+        "retirement guide",
+        ("consumer acknowledgments", "residual risk"),
     )
 
     accessibility = read_utf8(root / "docs/accessibility-review.md")
