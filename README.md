@@ -10,6 +10,9 @@ The repository does not currently provide a field runtime, transport service, sh
 - [Project overview](docs/project-overview.md)
 - [Architecture and trust boundaries](docs/architecture.md)
 - [Contract and repository boundaries](docs/contract-boundary.md)
+- [Charter decision packet](docs/charter-decision-packet.md)
+- [Retirement and migration guide](docs/retirement-migration-guide.md)
+- [Accessibility review](docs/accessibility-review.md)
 - [Safe onboarding](docs/onboarding.md)
 - [Developer documentation](docs/developer-guide.md)
 - [Task chain](taskchain.md)
@@ -22,6 +25,8 @@ The repository does not currently provide a field runtime, transport service, sh
 `REVIEW — CHARTER OR RETIREMENT DECISION REQUIRED`
 
 A prior architecture candidate exists in PR #2, but it is stale relative to current `main`, currently non-mergeable, and includes scaffold materialization that remains outside the approved documentation scope. This branch preserves the useful charter questions while introducing no implementation or publication authority.
+
+The [charter decision packet](docs/charter-decision-packet.md) defines the evidence and decision record required to approve, revise, split, or retire the repository. The [retirement and migration guide](docs/retirement-migration-guide.md) preserves provenance, consumer reachability, and rollback whether or not an active charter is ever approved.
 
 ## Proposed bounded role
 
@@ -53,16 +58,25 @@ Documentation uses the following states consistently:
 
 Passing documentation checks establishes only source consistency. It does not approve the charter, merge PR #2, authorize scaffold writes, approve Pages publication, release a package, activate a service, or grant operational authority.
 
+## Accessibility and review
+
+Evidence state, authority, retirement, and rollback must be communicated in text and must not depend on color, layout, motion, or a diagram alone. Source review is required now; keyboard, focus, 200%/400% zoom and reflow, contrast, reduced-motion, and assistive-technology review remain required against any exact rendered publication candidate.
+
 ## FYSA-120 capability map
 
 This documentation work uses the portfolio skill map as planning metadata:
 
 - **CAT-012:** document architecture, technical exposition, link checking, docs-as-code, and lifecycle synchronization;
-- **CAT-013:** repository-role modeling, contradiction detection, provenance, and relationship-graph maintenance;
-- **CAT-017:** exact-version references, source lineage, digest binding, and correction propagation;
-- **CAT-019:** plain-language explanation and accessible alternatives to diagrams;
-- **CAT-031:** acceptance criteria, regression tests, and exact-head verification;
-- **CAT-040:** repository archaeology, migration planning, compatibility boundaries, and rollback;
-- **CAT-052:** least privilege, audit evidence, and continuous assurance.
+- **CAT-013:** repository-role modeling, contradiction detection, provenance, relationship-graph maintenance, and charter disposition analysis;
+- **CAT-017:** exact-version references, source lineage, digest binding, correction propagation, and review records;
+- **CAT-019:** plain-language explanation, accessible alternatives to diagrams, status comprehension, keyboard/focus review, and zoom/reflow review;
+- **CAT-031:** acceptance criteria, hostile regressions, exact-head verification, and fail-closed publication review;
+- **CAT-040:** repository archaeology, migration planning, compatibility boundaries, retirement, restoration, and rollback;
+- **CAT-052:** least privilege, consent boundaries, audit evidence, and continuous assurance.
 
-Proposed non-authoritative subdivision: **`012-M — charter-stage repository documentation and retirement-readiness engineering`**.
+Proposed non-authoritative subdivisions:
+
+- **`012-M — charter-stage repository documentation and retirement-readiness engineering`**;
+- **`013-J — repository-charter decision matrices and contract-graph disposition analysis`**;
+- **`019-K — evidence-state, authority-boundary, and retirement-route accessibility assurance`**;
+- **`040-J — repository retirement, consumer-reachability, and restoration engineering`**.
