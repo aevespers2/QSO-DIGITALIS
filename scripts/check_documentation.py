@@ -6,7 +6,6 @@ import argparse
 import hashlib
 import json
 import re
-import sys
 from pathlib import Path
 from typing import Iterable
 
@@ -16,6 +15,9 @@ REQUIRED_FILES = (
     "docs/project-overview.md",
     "docs/architecture.md",
     "docs/contract-boundary.md",
+    "docs/charter-decision-packet.md",
+    "docs/retirement-migration-guide.md",
+    "docs/accessibility-review.md",
     "docs/onboarding.md",
     "docs/developer-guide.md",
     "taskchain.md",
@@ -30,6 +32,9 @@ REQUIRED_README_ROUTES = (
     "docs/project-overview.md",
     "docs/architecture.md",
     "docs/contract-boundary.md",
+    "docs/charter-decision-packet.md",
+    "docs/retirement-migration-guide.md",
+    "docs/accessibility-review.md",
     "docs/onboarding.md",
     "docs/developer-guide.md",
     "taskchain.md",
@@ -58,6 +63,12 @@ def normalize_link(source: Path, target: str) -> Path | None:
     if not clean or clean.startswith(EXTERNAL_SCHEMES):
         return None
     return (source.parent / clean).resolve()
+
+
+def require_markers(findings: list[str], text: str, label: str, markers: tuple[str, ...]) -> None:
+    for marker in markers:
+        if marker not in text:
+            findings.append(f"{label} missing marker: {marker}")
 
 
 def validate(root: Path) -> dict[str, object]:
@@ -90,15 +101,21 @@ def validate(root: Path) -> dict[str, object]:
     for route in REQUIRED_README_ROUTES:
         if f"({route})" not in readme:
             findings.append(f"README missing route: {route}")
-    for marker in (
-        "REVIEW — CHARTER OR RETIREMENT DECISION REQUIRED",
-        "QSO-CONSENT-CAPACITY-LOCK-v1",
-        "documentation-first charter candidate",
-        "Pages publication",
-        "012-M",
-    ):
-        if marker not in readme:
-            findings.append(f"README missing marker: {marker}")
+    require_markers(
+        findings,
+        readme,
+        "README",
+        (
+            "REVIEW — CHARTER OR RETIREMENT DECISION REQUIRED",
+            "QSO-CONSENT-CAPACITY-LOCK-v1",
+            "documentation-first charter candidate",
+            "Pages publication",
+            "012-M",
+            "013-J",
+            "019-K",
+            "040-J",
+        ),
+    )
 
     architecture = read_utf8(root / "docs/architecture.md")
     if "```mermaid" not in architecture:
@@ -118,6 +135,59 @@ def validate(root: Path) -> dict[str, object]:
         if marker not in contract:
             findings.append(f"contract boundary missing marker: {marker}")
 
+    decision = read_utf8(root / "docs/charter-decision-packet.md")
+    require_markers(
+        findings,
+        decision,
+        "charter decision packet",
+        (
+            "## Decision options",
+            "## Decision matrix",
+            "## Evidence required before an active-charter decision",
+            "## Required decision record",
+            "APPROVE_BOUNDED_CHARTER",
+            "REVISE_OR_SPLIT",
+            "RETIRE",
+            "013-J",
+        ),
+    )
+
+    retirement = read_utf8(root / "docs/retirement-migration-guide.md")
+    require_markers(
+        findings,
+        retirement,
+        "retirement guide",
+        (
+            "## Consumer and dependency inventory",
+            "## Retirement sequence",
+            "## Migration states",
+            "## Rollback and restoration",
+            "consumer acknowledgments",
+            "residual risk",
+            "040-J",
+        ),
+    )
+
+    accessibility = read_utf8(root / "docs/accessibility-review.md")
+    require_markers(
+        findings,
+        accessibility,
+        "accessibility review",
+        (
+            "## Source-review checklist",
+            "## Rendered-site review",
+            "## Decision and retirement comprehension test",
+            "## Review record",
+            "status is not conveyed by color alone",
+            "Equivalent prose:",
+            "200%",
+            "400%",
+            "keyboard",
+            "reduced-motion",
+            "019-K",
+        ),
+    )
+
     onboarding = read_utf8(root / "docs/onboarding.md")
     developer = read_utf8(root / "docs/developer-guide.md")
     if "python3 scripts/check_documentation.py" not in onboarding:
@@ -127,12 +197,19 @@ def validate(root: Path) -> dict[str, object]:
 
     for rel in PLANNING_FILES:
         text = read_utf8(root / rel)
+        lower = text.lower()
         if "PR #2" not in text:
             findings.append(f"{rel} does not classify PR #2")
-        if "stale" not in text.lower():
+        if "stale" not in lower:
             findings.append(f"{rel} does not mark stale candidate state")
-        if "deployment" not in text.lower():
+        if "deployment" not in lower:
             findings.append(f"{rel} lacks deployment boundary")
+        if "decision packet" not in lower:
+            findings.append(f"{rel} lacks decision-packet alignment")
+        if "retirement" not in lower or "rollback" not in lower:
+            findings.append(f"{rel} lacks retirement and rollback alignment")
+        if "accessibility" not in lower:
+            findings.append(f"{rel} lacks accessibility alignment")
 
     taskchain = read_utf8(root / "taskchain.md")
     release = read_utf8(root / "release.md")
@@ -141,6 +218,10 @@ def validate(root: Path) -> dict[str, object]:
         findings.append("charter decision gate P0.2 is not synchronized")
     if "BLOCKED — DOCUMENTATION CANDIDATE IN REVIEW" not in release:
         findings.append("release status is not documentation-candidate blocked")
+    if "200%/400% zoom and reflow" not in release:
+        findings.append("release plan lacks rendered accessibility gate")
+    if "consumer-reachability" not in punchlist:
+        findings.append("punch list lacks consumer-reachability capability mapping")
 
     root_resolved = root.resolve()
     for path in iter_markdown(root):
@@ -166,6 +247,8 @@ def validate(root: Path) -> dict[str, object]:
         "documentation authorizes deployment",
         "mergeability establishes compatibility",
         "digest proves semantic truth",
+        "source review proves rendered accessibility",
+        "archiving proves retirement complete",
     )
     for path in iter_markdown(root):
         text = read_utf8(path).lower()
@@ -183,7 +266,7 @@ def report(root: Path, checked: list[str], findings: list[str]) -> dict[str, obj
         if path.is_file():
             hashes[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
     return {
-        "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-001",
+        "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-002",
         "status": "PASS" if not findings else "FAIL_CLOSED",
         "checked_files": sorted(set(checked)),
         "file_sha256": hashes,
@@ -200,7 +283,7 @@ def main() -> int:
         result = validate(Path(args.root))
     except Exception as exc:
         result = {
-            "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-001",
+            "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-002",
             "status": "FAIL_CLOSED",
             "checked_files": [],
             "file_sha256": {},
