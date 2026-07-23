@@ -11,6 +11,7 @@ on:
       - "changelog.md"
       - "scripts/check_documentation.py"
       - "tests/test_check_documentation.py"
+      - "tests/test_documentation_workflow.py"
       - ".consent/consent-capacity-lock-v1.json"
       - ".github/workflows/documentation-candidate.yml"
   workflow_dispatch:
@@ -19,8 +20,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: qso-digitalis-documentation-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: qso-digitalis-documentation-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
 
 jobs:
   validate-documentation:
@@ -31,7 +32,24 @@ jobs:
       PYTHONDONTWRITEBYTECODE: "1"
 
     steps:
+      - name: Initialize evidence context
+        shell: bash
+        run: |
+          set -euo pipefail
+          evidence="$RUNNER_TEMP/qso-digitalis-documentation-evidence"
+          mkdir -p "$evidence"
+          {
+            printf 'repository=%s\n' "$GITHUB_REPOSITORY"
+            printf 'source_sha=%s\n' "$SUBMITTED_SHA"
+            printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
+            printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
+            printf 'event=%s\n' "$GITHUB_EVENT_NAME"
+            printf 'ref=%s\n' "$GITHUB_REF"
+          } | tee "$evidence/source-identity.txt"
+
       - name: Check out exact submitted source
+        id: checkout
+        continue-on-error: true
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ env.SUBMITTED_SHA }}
@@ -39,18 +57,14 @@ jobs:
           persist-credentials: false
           show-progress: false
 
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.13"
-          cache: ""
-
       - name: Assert immutable source and required inputs
+        id: source
+        if: always()
+        continue-on-error: true
         shell: bash
         run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$SUBMITTED_SHA"
-          test -z "$(git status --porcelain)"
+          set +e
+          evidence="$RUNNER_TEMP/qso-digitalis-documentation-evidence"
           required=(
             README.md
             docs/index.md
@@ -68,20 +82,32 @@ jobs:
             changelog.md
             scripts/check_documentation.py
             tests/test_check_documentation.py
+            tests/test_documentation_workflow.py
             .consent/consent-capacity-lock-v1.json
           )
-          for path in "${required[@]}"; do test -f "$path"; done
-          evidence="$RUNNER_TEMP/qso-digitalis-documentation-evidence"
-          mkdir -p "$evidence"
           {
-            printf 'repository=%s\n' "$GITHUB_REPOSITORY"
-            printf 'source_sha=%s\n' "$SUBMITTED_SHA"
-            printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
-            printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
-          } | tee "$evidence/source-identity.txt"
+            test "${{ steps.checkout.outcome }}" = "success"
+            test "$(git rev-parse HEAD 2>/dev/null)" = "$SUBMITTED_SHA"
+            test -z "$(git status --porcelain 2>/dev/null)"
+            for path in "${required[@]}"; do test -f "$path"; done
+          } > "$evidence/source-check.txt" 2>&1
+          status=$?
+          cat "$evidence/source-check.txt"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Set up Python
+        id: python
+        if: always() && steps.checkout.outcome == 'success'
+        continue-on-error: true
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.13"
+          cache: ""
 
       - name: Validate documentation
         id: validator
+        if: always() && steps.source.outputs.status == '0' && steps.python.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
@@ -95,14 +121,15 @@ jobs:
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Run hostile regressions
+      - name: Run hostile and workflow regressions
         id: tests
+        if: always() && steps.source.outputs.status == '0' && steps.python.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
           set +e
           evidence="$RUNNER_TEMP/qso-digitalis-documentation-evidence"
-          python3 -m unittest tests.test_check_documentation -v \
+          python3 -m unittest tests.test_check_documentation tests.test_documentation_workflow -v \
             > "$evidence/documentation-tests.txt" 2>&1
           status=$?
           cat "$evidence/documentation-tests.txt"
@@ -110,48 +137,72 @@ jobs:
           exit 0
 
       - name: Record deterministic source hashes
+        id: hashes
+        if: always() && steps.source.outputs.status == '0'
+        continue-on-error: true
         shell: bash
         run: |
-          set -euo pipefail
+          set +e
           evidence="$RUNNER_TEMP/qso-digitalis-documentation-evidence"
-          sha256sum \
-            README.md \
-            docs/index.md \
-            docs/project-overview.md \
-            docs/architecture.md \
-            docs/contract-boundary.md \
-            docs/charter-decision-packet.md \
-            docs/retirement-migration-guide.md \
-            docs/accessibility-review.md \
-            docs/onboarding.md \
-            docs/developer-guide.md \
-            taskchain.md \
-            punchlist.md \
-            release.md \
-            changelog.md \
-            scripts/check_documentation.py \
-            tests/test_check_documentation.py \
-            .consent/consent-capacity-lock-v1.json \
-            .github/workflows/documentation-candidate.yml \
-            > "$evidence/input-sha256.txt"
-          git diff --exit-code
-          git diff --cached --exit-code
-          test -z "$(git status --porcelain)"
+          {
+            sha256sum \
+              README.md \
+              docs/index.md \
+              docs/project-overview.md \
+              docs/architecture.md \
+              docs/contract-boundary.md \
+              docs/charter-decision-packet.md \
+              docs/retirement-migration-guide.md \
+              docs/accessibility-review.md \
+              docs/onboarding.md \
+              docs/developer-guide.md \
+              taskchain.md \
+              punchlist.md \
+              release.md \
+              changelog.md \
+              scripts/check_documentation.py \
+              tests/test_check_documentation.py \
+              tests/test_documentation_workflow.py \
+              .consent/consent-capacity-lock-v1.json \
+              .github/workflows/documentation-candidate.yml \
+              > "$evidence/input-sha256.txt"
+            git diff --exit-code
+            git diff --cached --exit-code
+            test -z "$(git status --porcelain)"
+          } > "$evidence/integrity-check.txt" 2>&1
+          status=$?
+          cat "$evidence/integrity-check.txt"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Upload retained evidence
+        id: upload
+        if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: qso-digitalis-documentation-${{ env.SUBMITTED_SHA }}
           path: ${{ runner.temp }}/qso-digitalis-documentation-evidence
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
 
       - name: Fail closed on unsuccessful validation
+        if: always()
         shell: bash
         env:
+          CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
+          PYTHON_OUTCOME: ${{ steps.python.outcome }}
+          SOURCE_STATUS: ${{ steps.source.outputs.status }}
           VALIDATOR_STATUS: ${{ steps.validator.outputs.status }}
           TEST_STATUS: ${{ steps.tests.outputs.status }}
+          HASH_STATUS: ${{ steps.hashes.outputs.status }}
+          UPLOAD_OUTCOME: ${{ steps.upload.outcome }}
         run: |
           set -euo pipefail
+          test "$CHECKOUT_OUTCOME" = "success"
+          test "$PYTHON_OUTCOME" = "success"
+          test "$SOURCE_STATUS" = "0"
           test "$VALIDATOR_STATUS" = "0"
           test "$TEST_STATUS" = "0"
+          test "$HASH_STATUS" = "0"
+          test "$UPLOAD_OUTCOME" = "success"
