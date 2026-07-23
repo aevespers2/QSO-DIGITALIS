@@ -63,7 +63,8 @@ class DocumentationValidationTests(unittest.TestCase):
         temp, root = self.make_tree()
         try:
             path = root / "release.md"
-            path.write_text(path.read_text(encoding="utf-8").replace("stale", "superseded-candidate", 1), encoding="utf-8")
+            text = path.read_text(encoding="utf-8")
+            path.write_text(text.replace("stale", "superseded-candidate").replace("Stale", "Superseded-candidate"), encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("does not mark stale" in x for x in result["findings"]))
         finally:
