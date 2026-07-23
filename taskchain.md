@@ -2,42 +2,47 @@
 
 ## Repository status
 
-QSO-DIGITALIS now has one draft charter candidate, PR #2, but no approved product charter, accepted schema contract, tested implementation, or deployment surface. Scaffold and materializer presence must not be presented as implemented field capability.
+QSO-DIGITALIS remains a charter-or-retirement decision. Current `main` contains no approved product charter, accepted schema contract, tested field implementation, Pages publication, package release, or deployment surface.
+
+Historical PR #2 proposed a bounded Digital Consciousness Field architecture plus scaffold materialization. It is now stale relative to `main` and non-mergeable. Its useful charter questions remain review inputs; its implementation-bearing changes are not current authority.
 
 States: `PROPOSED` · `READY` · `IN PROGRESS` · `BLOCKED` · `REVIEW` · `DONE`
 
 ## Product directive
 
-- **Next objective:** Review draft PR #2 as a documentation/architecture charter candidate and either approve a unique bounded Digital Consciousness Field role, request bounded correction, or retire/archive the repository.
-- **User outcome:** Portfolio contributors can determine whether QSO-DIGITALIS owns a necessary capability-scoped, content-addressed evidence-exchange contract; how it differs from QSO-SEEKER retrieval/canonicalization, QuantumStateObjects local runtime, and QSO-FABRIC experiment evidence; and what authority it explicitly lacks.
-- **MVP scope:** documentation-only decision covering purpose, users, field-envelope inputs/outputs, non-goals, trust/data/privacy/license/retention boundaries, publisher/subscriber capability separation, repository relationships, verification strategy, migration/rollback, and retirement criteria.
-- **Priority:** Charter disposition is the only active priority. No scaffold materialization, field runtime, transport, storage, signing, schedule, or cross-repository integration is authorized before P0 approval.
-- **Success criteria:** an approved charter establishes a non-overlapping stable contract and explicit evidence-only authority boundary, or the repository is retired; downstream repositories accept the contract by version/hash; no implementation task is opened solely because roadmap files exist.
-- **Non-goals:** literal-consciousness claims, raw network/credential/archive/package/binary/Git-object transport, unrestricted shared memory, implicit QSO trust, autonomous approval, repository writes, payments, settlement, or production infrastructure.
-- **Release rationale:** draft PR #2 creates a plausible bounded charter, but its scaffold plan and materializer are proposal artifacts and require architecture, security, privacy, retention, legal/license, provenance, and downstream-consumer review.
+- **Next objective:** complete a documentation-only charter review and explicitly approve, revise, or retire the repository.
+- **User outcome:** contributors can identify the repository's proposed role, boundaries, non-goals, dependencies, risks, evidence state, and retirement route without mistaking roadmap or scaffold artifacts for implementation.
+- **MVP scope:** project overview, Pages-ready front door, architecture and trust boundaries, repository/contract responsibility map, onboarding, developer guide, planning controls, exact-head documentation validation, and a decision packet.
+- **Priority:** documentation integrity and charter disposition precede schemas, fixtures, materialization, runtime, storage, transport, signing, scheduling, publication, or integration.
+- **Success criteria:** the documentation is internally consistent and accessible; PR #2 is classified as historical/stale; one explicit charter or retirement decision is recorded; any future contract is versioned, hash-bound, non-overlapping, reversible, and accepted by each consumer independently.
+- **Non-goals:** literal-consciousness claims, unrestricted shared memory, raw network/credential/package/binary/Git-object transport, implicit trust, autonomous approval, repository writes, payments, settlement, or production infrastructure.
 
 ## Active chain
 
 | Priority | Task | Owner | Depends on | Status | Acceptance criteria |
 |---|---|---|---|---|---|
-| P0 | Approve, revise, or retire the QSO-DIGITALIS charter | Architect / User | — | REVIEW | Draft PR #2 receives explicit disposition; purpose, users, envelopes, capabilities, trust/data/privacy/license/retention boundaries, non-overlap, verification, migration, rollback, and retirement criteria are approved. |
-| P1 | Publish the minimum schema-first contract candidate | QSOBuilder | P0 approved as active | BLOCKED | Only charter-approved schemas, policies, fixtures, negative cases, migrations, tests, and exact-head CI are added; roadmap placeholders do not count as implementation. |
-| P2 | Implement one bounded local in-memory/filesystem reference path | Builder | P1 accepted | PROPOSED | Deterministic content addressing, capability scope, topic/purpose filtering, retention, revocation, replay, tamper detection, and provenance pass without credentials/network or implicit trust. |
-| P3 | Validate cross-repository consumers | Architect / Builders | P2 | PROPOSED | QSO-SEEKER publishes only accepted inert records; QuantumStateObjects consumes read-only hash-fixed views; QSO-FABRIC records accesses in append-only evidence; all fail closed on version/hash mismatch. |
-| P4 | Archive the repository | Architect | P0 retirement decision | BLOCKED | README, description, release state, and migration links clearly record retirement and ownership transfer. |
+| P0 | Establish a complete documentation and decision front door | QSOBuilder | — | IN PROGRESS | README and `docs/` provide overview, architecture, contract boundary, onboarding, developer guidance, accessible diagrams, planning links, non-goals, evidence states, and exact-head validation. |
+| P0.1 | Disposition historical PR #2 | Architect / User | P0 | REVIEW | Useful charter material is preserved; stale implementation-bearing changes are superseded, revised, or rejected without history rewriting. |
+| P0.2 | Approve, revise, or retire the QSO-DIGITALIS charter | Architect / User | P0-P0.1 | BLOCKED | Unique purpose, users, record families, source precedence, owners/vacancies, privacy/security/license/retention, consumer boundaries, correction/withdrawal, migration, rollback, and retirement are explicit. |
+| P1 | Publish a minimum schema-first contract candidate | QSOBuilder | P0.2 approved as active | BLOCKED | Only approved schemas, canonicalization, namespaces, policies, fixtures, negative cases, migrations, validators, and exact-head evidence are added. |
+| P2 | Implement one bounded local reference path | Builder | P1 accepted | PROPOSED | Disposable, credential-free, network-disabled, deterministic local verification passes retention, correction, revocation, replay, tamper, isolation, migration, and rollback tests. |
+| P3 | Validate cross-repository consumers | Architect / Builders | P2 | PROPOSED | Exact consumer generations independently validate semantic compatibility and lifecycle propagation; parser success alone is insufficient. |
+| P4 | Publish documentation or release artifacts | Release owner | P0.2-P3 and explicit approval | BLOCKED | Publication/release is separately approved, reproducible, accessible, provenance-bound, reversible, and verified after transition. |
+| P5 | Retire the repository | Architect | P0.2 retirement decision | BLOCKED | README, repository description, release status, redirects, archives, ownership transfers, consumer migrations, and rollback evidence clearly record retirement. |
 
-## Draft charter candidate — PR #2
+## Current documentation candidate
 
-**Status:** `REVIEW — DRAFT ARCHITECTURE/SCAFFOLD ONLY; USER AND ARCHITECT APPROVAL REQUIRED`
+**Status:** `IN PROGRESS — DOCUMENTATION ONLY`
 
-PR #2 is open, draft, mergeable, and currently points to head `46dea012b63e4652bf845d344128797cda804d16`. It proposes a bounded Digital Consciousness Field architecture, a roadmap manifest, and a deterministic scaffold materializer. It explicitly excludes arbitrary code execution, raw credentials/packages/binaries/Git objects, unrestricted shared memory, implicit trust, and literal-consciousness claims. It does not include accepted schemas, fixtures, tests, CI evidence, security review, downstream compatibility, provenance, rollback evidence, or deployment approval.
+Branch `docs/digitalis-charter-front-door` prepares the missing reader routes and deterministic documentation checks. It does not approve the Digital Consciousness Field charter, merge historical PR #2, accept schemas, run a scaffold materializer, publish Pages, release a package, deploy a service, or grant operational authority.
 
 ## Architectural hold
 
-Do not run the materializer with `--write`, create runtime/storage/transport authority, publish field envelopes, or change downstream contracts until P0 is explicitly approved. Any future implementation must remain content-addressed, capability-scoped, purpose-limited, retention/revocation aware, human-reviewed, non-executing, and independently testable by version/hash.
+Do not run any scaffold materializer with write mode, create runtime/storage/transport authority, publish field envelopes, register consumers, or alter downstream contracts until P0.2 is explicitly approved. `QSO-CONSENT-CAPACITY-LOCK-v1` and human final review remain mandatory.
 
-## Builder Log
+## Builder log
 
-Record approvals, decisions, PR/head identities, validation commands/results, schema and artifact hashes, threat/privacy/license review, migrations, rollback evidence, downstream consumer results, retirement links, and follow-ups.
+Record exact branches and heads, documentation surfaces, validation commands/results, artifacts and expirations, architecture decisions, owner vacancies, security/privacy/license/accessibility review, migrations, rollback evidence, consumer dispositions, retirement links, and follow-ups.
 
-- 2026-07-17 — Classified draft PR #2 as the first concrete charter candidate. P0 moved from `BLOCKED` to `REVIEW`; no implementation, materialization, release, or deployment was authorized.
+- 2026-07-17 — Classified PR #2 as the first concrete charter candidate; no implementation or release was authorized.
+- 2026-07-23 — Reclassified PR #2 as stale and non-mergeable relative to current `main`; began a current documentation-only front door without changing implementation scope.
