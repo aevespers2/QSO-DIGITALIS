@@ -39,6 +39,16 @@ class DocumentationValidationTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_missing_decision_packet_fails(self):
+        temp, root = self.make_tree()
+        try:
+            (root / "docs/charter-decision-packet.md").unlink()
+            result = module.validate(root)
+            self.assertEqual(result["status"], "FAIL_CLOSED")
+            self.assertTrue(any("missing required file" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
     def test_broken_internal_link_fails(self):
         temp, root = self.make_tree()
         try:
@@ -59,6 +69,36 @@ class DocumentationValidationTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_decision_record_option_drift_fails(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/charter-decision-packet.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("APPROVE_BOUNDED_CHARTER", "APPROVE"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("charter decision packet missing marker" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_retirement_rollback_route_is_required(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/retirement-migration-guide.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("## Rollback and restoration", "## Recovery notes"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("retirement guide missing marker" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_accessibility_400_percent_review_is_required(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/accessibility-review.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("400%", "four-hundred percent"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("accessibility review missing marker: 400%" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
     def test_stale_candidate_classification_is_required(self):
         temp, root = self.make_tree()
         try:
@@ -67,6 +107,16 @@ class DocumentationValidationTests(unittest.TestCase):
             path.write_text(text.replace("stale", "superseded-candidate").replace("Stale", "Superseded-candidate"), encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("does not mark stale" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_planning_decision_packet_alignment_is_required(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "changelog.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("decision packet", "decision worksheet"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("lacks decision-packet alignment" in x for x in result["findings"]))
         finally:
             temp.cleanup()
 
@@ -95,6 +145,16 @@ class DocumentationValidationTests(unittest.TestCase):
         try:
             path = root / "docs/index.md"
             path.write_text(path.read_text(encoding="utf-8") + "\nPassing CI approves the charter.\n", encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("authority promotion" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_source_review_cannot_promote_rendered_accessibility(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/accessibility-review.md"
+            path.write_text(path.read_text(encoding="utf-8") + "\nSource review proves rendered accessibility.\n", encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("authority promotion" in x for x in result["findings"]))
         finally:
