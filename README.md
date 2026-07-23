@@ -51,7 +51,7 @@ Documentation uses the following states consistently:
 - `WITHDRAWN` — no longer current;
 - `HISTORICAL` — preserved as provenance, not current authority.
 
-Passing documentation checks establishes only source consistency. It does not approve the charter, merge PR #2, authorize scaffold writes, publish Pages, release a package, activate a service, or grant operational authority.
+Passing documentation checks establishes only source consistency. It does not approve the charter, merge PR #2, authorize scaffold writes, approve Pages publication, release a package, activate a service, or grant operational authority.
 
 ## FYSA-120 capability map
 
