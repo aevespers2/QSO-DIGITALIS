@@ -52,6 +52,8 @@ An empty inventory must be demonstrated, not assumed.
 11. **Apply one reversible change at a time.** Verify the resulting state after each approved transition and retain exact-head evidence.
 12. **Close only after reachability review.** Record acknowledged consumers, unreachable consumers, uncontrolled copies, residual risk, and the restoration window.
 
+Consumer acknowledgments must bind the exact retirement or migration generation, the receiving repository and head, the semantic mapping, and any residual copy or cache risk.
+
 ## Migration states
 
 Use distinct states rather than a single “done” flag:
