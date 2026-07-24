@@ -39,6 +39,26 @@ class DocumentationValidationTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_missing_interpretation_profile_fails(self):
+        temp, root = self.make_tree()
+        try:
+            (root / "docs/source-observation-interpretation-profile.md").unlink()
+            result = module.validate(root)
+            self.assertEqual(result["status"], "FAIL_CLOSED")
+            self.assertTrue(any("missing required file" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_missing_obstruction_register_fails(self):
+        temp, root = self.make_tree()
+        try:
+            (root / "docs/obstruction-and-gluing.md").unlink()
+            result = module.validate(root)
+            self.assertEqual(result["status"], "FAIL_CLOSED")
+            self.assertTrue(any("missing required file" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
     def test_missing_decision_packet_fails(self):
         temp, root = self.make_tree()
         try:
@@ -66,6 +86,52 @@ class DocumentationValidationTests(unittest.TestCase):
             path.write_text(path.read_text(encoding="utf-8").replace("**Equivalent prose:**", "Equivalent description:"), encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("equivalent prose" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_profile_without_historical_source_fails(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/source-observation-interpretation-profile.md"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(module.HISTORICAL_PROFILE_SOURCE, "0" * 40),
+                encoding="utf-8",
+            )
+            result = module.validate(root)
+            self.assertTrue(any("interpretation profile missing marker" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_profile_without_identity_separation_fails(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/source-observation-interpretation-profile.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("## Identity separation", "## Combined identity"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("interpretation profile missing marker" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_obstruction_without_triple_overlap_fails(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/obstruction-and-gluing.md"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace("## Required triple-overlap witnesses", "## Integration notes"),
+                encoding="utf-8",
+            )
+            result = module.validate(root)
+            self.assertTrue(any("obstruction register missing marker" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_obstruction_route_removal_fails(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/obstruction-and-gluing.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("Digitalis → Bridge", "Digitalis to transport"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("missing pairwise route" in x for x in result["findings"]))
         finally:
             temp.cleanup()
 
@@ -106,7 +172,17 @@ class DocumentationValidationTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             path.write_text(text.replace("stale", "superseded-candidate").replace("Stale", "Superseded-candidate"), encoding="utf-8")
             result = module.validate(root)
-            self.assertTrue(any("does not mark stale" in x for x in result["findings"]))
+            self.assertTrue(any("stale/retired/historical" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_historical_pr5_classification_is_required(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "taskchain.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("PR #5", "legacy profile branch"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("historical PR #2 and PR #5" in x for x in result["findings"]))
         finally:
             temp.cleanup()
 
@@ -117,6 +193,16 @@ class DocumentationValidationTests(unittest.TestCase):
             path.write_text(path.read_text(encoding="utf-8").replace("decision packet", "decision worksheet"), encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("lacks decision-packet alignment" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_planning_profile_gluing_alignment_is_required(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "release.md"
+            path.write_text(path.read_text(encoding="utf-8").replace("gluing", "composition").replace("interpretation", "derived view"), encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("lacks profile/gluing alignment" in x for x in result["findings"]))
         finally:
             temp.cleanup()
 
@@ -155,6 +241,16 @@ class DocumentationValidationTests(unittest.TestCase):
         try:
             path = root / "docs/accessibility-review.md"
             path.write_text(path.read_text(encoding="utf-8") + "\nSource review proves rendered accessibility.\n", encoding="utf-8")
+            result = module.validate(root)
+            self.assertTrue(any("authority promotion" in x for x in result["findings"]))
+        finally:
+            temp.cleanup()
+
+    def test_transport_receipt_cannot_promote_disposition(self):
+        temp, root = self.make_tree()
+        try:
+            path = root / "docs/obstruction-and-gluing.md"
+            path.write_text(path.read_text(encoding="utf-8") + "\nTransport receipt proves canonical acceptance.\n", encoding="utf-8")
             result = module.validate(root)
             self.assertTrue(any("authority promotion" in x for x in result["findings"]))
         finally:
