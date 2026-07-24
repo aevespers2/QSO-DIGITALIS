@@ -9,12 +9,17 @@ import re
 from pathlib import Path
 from typing import Iterable
 
+HISTORICAL_PROFILE_SOURCE = "37b00a30f5b6f3df719e3884f7c1c8e79dd796a8"
+RETIRED_IMPLEMENTATION_SOURCE = "811f51ba983737e16ab5d465fb848aa5999b82d6"
+
 REQUIRED_FILES = (
     "README.md",
     "docs/index.md",
     "docs/project-overview.md",
     "docs/architecture.md",
     "docs/contract-boundary.md",
+    "docs/source-observation-interpretation-profile.md",
+    "docs/obstruction-and-gluing.md",
     "docs/charter-decision-packet.md",
     "docs/retirement-migration-guide.md",
     "docs/accessibility-review.md",
@@ -32,6 +37,8 @@ REQUIRED_README_ROUTES = (
     "docs/project-overview.md",
     "docs/architecture.md",
     "docs/contract-boundary.md",
+    "docs/source-observation-interpretation-profile.md",
+    "docs/obstruction-and-gluing.md",
     "docs/charter-decision-packet.md",
     "docs/retirement-migration-guide.md",
     "docs/accessibility-review.md",
@@ -119,10 +126,10 @@ def validate(root: Path) -> dict[str, object]:
             "QSO-CONSENT-CAPACITY-LOCK-v1",
             "documentation-first charter candidate",
             "Pages publication",
-            "012-M",
-            "013-J",
-            "019-K",
-            "040-J",
+            HISTORICAL_PROFILE_SOURCE,
+            RETIRED_IMPLEMENTATION_SOURCE,
+            "032-M",
+            "032-N",
         ),
     )
 
@@ -143,6 +150,58 @@ def validate(root: Path) -> dict[str, object]:
     for marker in ("## Contract acceptance tuple", "## Gluing conditions", "## Current obstruction register"):
         if marker not in contract:
             findings.append(f"contract boundary missing marker: {marker}")
+
+    profile = read_utf8(root / "docs/source-observation-interpretation-profile.md")
+    require_markers(
+        findings,
+        profile,
+        "interpretation profile",
+        (
+            "PROPOSED_PROFILE — DOCUMENTED_NOT_ACCEPTED",
+            HISTORICAL_PROFILE_SOURCE,
+            "## Identity separation",
+            "## Candidate record families",
+            "## Candidate evidence flow",
+            "```mermaid",
+            "**Equivalent prose:**",
+            "## Canonicalization and transformation rules",
+            "LOSSLESS_REPACKAGE",
+            "UNKNOWN",
+            "## Required compatibility witnesses",
+            "032-M",
+        ),
+    )
+
+    obstruction = read_utf8(root / "docs/obstruction-and-gluing.md")
+    require_markers(
+        findings,
+        obstruction,
+        "obstruction register",
+        (
+            "REVIEW — CONTRACT GRAPH UNRESOLVED",
+            HISTORICAL_PROFILE_SOURCE,
+            "## Method",
+            "## Route under review",
+            "```mermaid",
+            "**Equivalent prose:**",
+            "## Active obstruction ledger",
+            "O-DIG-01",
+            "O-DIG-20",
+            "## Pairwise gluing requirements",
+            "## Required triple-overlap witnesses",
+            "## Acceptance evidence",
+            "032-N",
+        ),
+    )
+    for route in (
+        "QSO-SEEKER → Digitalis",
+        "Temporal authority → Digitalis",
+        "Digitalis → Bridge",
+        "Bridge → Repository `1`",
+        "Repository `1` → consumers",
+    ):
+        if route not in obstruction:
+            findings.append(f"obstruction register missing pairwise route: {route}")
 
     decision = read_utf8(root / "docs/charter-decision-packet.md")
     require_markers(
@@ -211,10 +270,10 @@ def validate(root: Path) -> dict[str, object]:
     for rel in PLANNING_FILES:
         text = read_utf8(root / rel)
         lower = text.lower()
-        if "PR #2" not in text:
-            findings.append(f"{rel} does not classify PR #2")
-        if "stale" not in lower:
-            findings.append(f"{rel} does not mark stale candidate state")
+        if "PR #2" not in text or "PR #5" not in text:
+            findings.append(f"{rel} does not classify historical PR #2 and PR #5")
+        if "stale" not in lower or "retired" not in lower or "historical" not in lower:
+            findings.append(f"{rel} lacks stale/retired/historical lineage classification")
         if "deployment" not in lower:
             findings.append(f"{rel} lacks deployment boundary")
         if "decision packet" not in lower:
@@ -223,18 +282,26 @@ def validate(root: Path) -> dict[str, object]:
             findings.append(f"{rel} lacks retirement and rollback alignment")
         if "accessibility" not in lower:
             findings.append(f"{rel} lacks accessibility alignment")
+        if "gluing" not in lower or "interpretation" not in lower:
+            findings.append(f"{rel} lacks profile/gluing alignment")
 
     taskchain = read_utf8(root / "taskchain.md")
     release = read_utf8(root / "release.md")
     punchlist = read_utf8(root / "punchlist.md")
+    changelog = read_utf8(root / "changelog.md")
     if "P0.2" not in taskchain or "P0.2" not in punchlist:
         findings.append("charter decision gate P0.2 is not synchronized")
+    if "P0.G" not in taskchain:
+        findings.append("profile/gluing gate P0.G is missing")
     if "BLOCKED — DOCUMENTATION CANDIDATE IN REVIEW" not in release:
         findings.append("release status is not documentation-candidate blocked")
     if "200%/400% zoom and reflow" not in release:
         findings.append("release plan lacks rendered accessibility gate")
     if "consumer-reachability" not in punchlist:
         findings.append("punch list lacks consumer-reachability capability mapping")
+    for marker in ("032-M", "032-N"):
+        if marker not in taskchain or marker not in punchlist or marker not in changelog:
+            findings.append(f"planning routes do not preserve capability marker: {marker}")
 
     root_resolved = root.resolve()
     for path in iter_markdown(root):
@@ -262,6 +329,9 @@ def validate(root: Path) -> dict[str, object]:
         "digest proves semantic truth",
         "source review proves rendered accessibility",
         "archiving proves retirement complete",
+        "historical validation proves current",
+        "transport receipt proves canonical acceptance",
+        "projection grants capability",
     )
     for path in iter_markdown(root):
         text = read_utf8(path).lower()
@@ -279,7 +349,7 @@ def report(root: Path, checked: list[str], findings: list[str]) -> dict[str, obj
         if path.is_file():
             hashes[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
     return {
-        "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-002",
+        "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-003",
         "status": "PASS" if not findings else "FAIL_CLOSED",
         "checked_files": sorted(set(checked)),
         "file_sha256": hashes,
@@ -296,7 +366,7 @@ def main() -> int:
         result = validate(Path(args.root))
     except Exception as exc:
         result = {
-            "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-002",
+            "profile": "QSO-DIGITALIS-DOCUMENTATION-CANDIDATE-003",
             "status": "FAIL_CLOSED",
             "checked_files": [],
             "file_sha256": {},
