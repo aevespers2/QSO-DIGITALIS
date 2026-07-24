@@ -4,7 +4,7 @@
 
 QSO-DIGITALIS remains a charter-or-retirement decision. Current `main` contains no approved product charter, accepted schema contract, tested field implementation, Pages publication, package release, or deployment surface.
 
-Historical PR #2 is closed unmerged as a retired implementation/scaffold lineage at exact head `811f51ba983737e16ab5d465fb848aa5999b82d6`. Historical PR #5 is closed unmerged as a preserved interpretation and gluing source lineage at exact head `37b00a30f5b6f3df719e3884f7c1c8e79dd796a8`. Neither historical generation is current authority or current validation evidence.
+Historical PR #2 became stale relative to current `main` and is closed unmerged as a retired implementation/scaffold lineage at exact head `811f51ba983737e16ab5d465fb848aa5999b82d6`. Historical PR #5 is closed unmerged as a preserved interpretation and gluing source lineage at exact head `37b00a30f5b6f3df719e3884f7c1c8e79dd796a8`. Neither historical generation is current authority or current validation evidence.
 
 States: `PROPOSED` · `READY` · `IN PROGRESS` · `BLOCKED` · `REVIEW` · `DONE`
 
