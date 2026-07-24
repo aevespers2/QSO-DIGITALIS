@@ -48,6 +48,12 @@ All notable product, architecture, documentation, implementation, release, and d
 - 2026-07-23 — Recorded source review and rendered-site review as distinct evidence states; a source-only pass cannot be promoted to rendered accessibility approval.
 - 2026-07-24 — Added prose-equivalent route diagrams and required record identity, obstruction state, correction, rollback, and unsupported-route meaning to remain understandable without color or diagram rendering.
 
+### FYSA-120 capability mapping
+
+- 2026-07-24 — Applied CAT-011, CAT-012, CAT-013, CAT-017, CAT-018, CAT-019, CAT-031, CAT-040, and CAT-052 to the interpretation/profile and gluing documentation milestone.
+- 2026-07-24 — Proposed non-authoritative subdivision `032-M — authority-separated interpretation, policy-projection, and exchange-envelope documentation with correction-closed compatibility witnesses`.
+- 2026-07-24 — Proposed non-authoritative subdivision `032-N — cross-repository obstruction ledgers, triple-overlap witnesses, and correction-closed gluing paths for evidence systems`.
+
 ### Implementation
 
 - No field runtime, materialized scaffold, accepted schema, adapter, storage, transport, consumer registration, or operational capability is claimed.
